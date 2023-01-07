@@ -10,7 +10,7 @@
   </div>
   <div class="flex-none gap-2">
     <ul class="menu menu-horizontal px-1">
-      <li><a>About</a></li>
+      <li><a href="/about">About</a></li>
     </ul>
     <div class="dropdown dropdown-end">
       <label tabindex="0" class="btn btn-ghost btn-circle avatar">
