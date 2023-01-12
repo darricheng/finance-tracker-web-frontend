@@ -1,8 +1,8 @@
 # Finance Tracker App Routes
 
-## Base Routes
+## Public Routes
 
-Base routes are public facing routes — they are not protected by authentication.
+Public routes are public facing routes — they are not protected by authentication.
 
 These are routes that users who aren't signed in are able to see.
 
@@ -12,9 +12,11 @@ These are routes that users who aren't signed in are able to see.
 - `/about` - the about page
 - `/signup` - the signup page
 
-## App Routes
+## Private Routes
 
-App routes are protected by authentication. Only logged in users will be able to see these routes.
+Private routes are protected by authentication. Only logged in users will be able to see these routes.
+
+For greater user clarity, these routes are also prefixed with `/app`.
 
 **Examples:**
 
