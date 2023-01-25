@@ -1,6 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
 	import authStore from '$lib/stores/authStore';
+	import { getAuth } from 'firebase/auth';
 
 	// Send users who aren't logged in to the login page
 	authStore.subscribe(async ({ isLoggedIn, firebaseControlled }) => {
@@ -8,6 +9,16 @@
 			await goto('/login');
 		}
 	});
+
+	// Logout function
+	async function logout() {
+		const auth = getAuth();
+		try {
+			await auth.signOut();
+		} catch (error) {
+			console.log(error);
+		}
+	}
 </script>
 
 <div class="navbar bg-base-100 px-8">
@@ -33,7 +44,7 @@
 					<a>Profile</a>
 				</li>
 				<li><a>Settings</a></li>
-				<li><a>Logout</a></li>
+				<li><a on:click={logout}>Logout</a></li>
 			</ul>
 		</div>
 	</div>
