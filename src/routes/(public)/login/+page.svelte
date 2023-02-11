@@ -1,6 +1,12 @@
-<script>
-	import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+<script lang="ts">
+	import {
+		getAuth,
+		signInWithPopup,
+		GoogleAuthProvider,
+		getAdditionalUserInfo
+	} from 'firebase/auth';
 	import authStore from '$lib/stores/authStore';
+	import type { User, UserCredential } from 'firebase/auth';
 
 	// TODO: Add Signin via redirect for mobile devices
 
@@ -8,9 +14,17 @@
 		const provider = new GoogleAuthProvider();
 		const auth = getAuth();
 		try {
-			const res = await signInWithPopup(auth, provider);
-			const credential = GoogleAuthProvider.credentialFromResult(res);
-			const user = res.user;
+			const res: UserCredential = await signInWithPopup(auth, provider);
+			const user: User = res.user;
+			authStore.set({ isLoggedIn: true, user, firebaseControlled: true });
+
+			const isNewUser = getAdditionalUserInfo(res)?.isNewUser;
+			if (isNewUser) {
+				// TODO: Add user to database
+			}
+
+			// TODO: Redirect to dashboard?
+			// TODO: Add user details to the state of the app
 		} catch (error) {
 			console.log(error);
 		}
