@@ -3,7 +3,7 @@
 		<div class="max-w-xl">
 			<h1 class="text-6xl font-bold py-4">Welcome To Clearer Finance</h1>
 			<p class="py-6">Get a full picture of everything that's going on with your money</p>
-			<a href="/signup"><button class="btn btn-primary">Get Started</button></a>
+			<a href="/login"><button class="btn btn-primary">Get Started</button></a>
 		</div>
 	</div>
 </div>
