@@ -19,12 +19,11 @@
 			authStore.set({ isLoggedIn: true, user, firebaseControlled: true });
 
 			const isNewUser = getAdditionalUserInfo(res)?.isNewUser;
-			if (isNewUser) {
-				// TODO: Add user to database
-			}
 
-			// TODO: Redirect to dashboard?
-			// TODO: Add user details to the state of the app
+			// TODO: If it's a new user, add details to the database then redirect to category setup page. That page will prompt the user to add categories (which will be updated in the database), then redirect to dashboard after setup.
+			// TODO: Else do nothing as logged in user will be redirected to dashboard automatically. (See src/routes/(public)/+layout.svelte)
+			// Need to test thoroughly, because not sure when the redirect for a logged in user will occur.
+			// Else another option is to set the auto redirect to not occur if the user is new.
 		} catch (error) {
 			console.log(error);
 		}
