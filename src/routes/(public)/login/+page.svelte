@@ -17,6 +17,7 @@
 		try {
 			const res: UserCredential = await signInWithPopup(auth, provider);
 			const user: User = res.user;
+			// TODO: Determine if I need to set the authStore here. I think it's already set in the onMount function in src/routes/(public)/+layout.svelte
 			// authStore.set({ isLoggedIn: true, user, firebaseControlled: true });
 
 			const isNewUser = getAdditionalUserInfo(res)?.isNewUser;
