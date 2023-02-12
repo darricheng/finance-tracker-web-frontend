@@ -7,6 +7,7 @@
 	} from 'firebase/auth';
 	import authStore from '$lib/stores/authStore';
 	import type { User, UserCredential } from 'firebase/auth';
+	import { goto } from '$app/navigation';
 
 	// TODO: Add Signin via redirect for mobile devices
 
@@ -16,7 +17,7 @@
 		try {
 			const res: UserCredential = await signInWithPopup(auth, provider);
 			const user: User = res.user;
-			authStore.set({ isLoggedIn: true, user, firebaseControlled: true });
+			// authStore.set({ isLoggedIn: true, user, firebaseControlled: true });
 
 			const isNewUser = getAdditionalUserInfo(res)?.isNewUser;
 
@@ -24,6 +25,24 @@
 			// TODO: Else do nothing as logged in user will be redirected to dashboard automatically. (See src/routes/(public)/+layout.svelte)
 			// Need to test thoroughly, because not sure when the redirect for a logged in user will occur.
 			// Else another option is to set the auto redirect to not occur if the user is new.
+
+			if (isNewUser) {
+				const apiUrl = import.meta.env.VITE_API_URL;
+				const res = await fetch(`${apiUrl}/users/add_user`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						firebase_id: user.uid,
+						email: user.email
+					})
+				});
+
+				if (res.status === 201) {
+					goto('/app/setup');
+				}
+			}
 		} catch (error) {
 			console.log(error);
 		}
