@@ -1,5 +1,4 @@
 <script lang="ts">
-	// TODO: Add a button beside each category to remove it from the list
 	// TODO: Update the database with the categories
 
 	let categoryInput = '';
