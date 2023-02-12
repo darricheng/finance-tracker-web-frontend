@@ -30,10 +30,11 @@
 	}
 </script>
 
-<div on:click={loginWithGoogle} class="google-btn">
+<div on:click={loginWithGoogle} on:keydown={loginWithGoogle} class="google-btn">
 	<div class="google-icon-wrapper">
 		<img
 			class="google-icon"
+			alt="Google signin button"
 			src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
 		/>
 	</div>
