@@ -1,23 +1,59 @@
 <script lang="ts">
+	import { getAuth } from 'firebase/auth';
+	import { goto } from '$app/navigation';
+
 	// TODO: Update the database with the categories
 
+	// Categories variables
 	let categoryInput = '';
-
 	let categories: string[] = [];
 
 	function addNewCategory() {
 		// Add the category to the categories array, then clear the input field
 		categories = [...categories, categoryInput];
 		categoryInput = '';
-		console.log(categories);
 	}
 
 	function removeCategory(i: number) {
 		// Remove the category from the categories array
 		return () => {
 			categories = categories.filter((_, index) => index !== i);
-			console.log(categories);
 		};
+	}
+
+	async function submitCategories() {
+		const auth = getAuth();
+		const user = auth.currentUser;
+
+		if (!user) {
+			console.error('User not logged in, not supposed to be here.');
+			return;
+		}
+		if (categories.length === 0) {
+			console.log('No categories created.');
+			// TODO: Add a toast message to tell the user to add at least one category
+		}
+
+		try {
+			const apiUrl = import.meta.env.VITE_API_URL;
+			const res = await fetch(`${apiUrl}/users/update_user_categories`, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					email: user.email,
+					categories
+				})
+			});
+
+			if (res.status === 200) {
+				// TODO: Add a success message to tell the user that the categories were added successfully, then redirect to dashboard
+				goto('/app/dashboard');
+			}
+		} catch (error) {
+			console.error(error);
+		}
 	}
 </script>
 
@@ -73,5 +109,7 @@
 		</div>
 		<button class="btn btn-accent" id="add-new-category" type="submit">Add</button>
 	</form>
-	<button class="btn btn-primary">Finish</button>
+	<button class="btn btn-primary" on:click={submitCategories} on:keydown={submitCategories}
+		>Finish</button
+	>
 </section>
