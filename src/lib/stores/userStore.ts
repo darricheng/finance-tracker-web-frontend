@@ -16,10 +16,20 @@ import { z } from 'zod';
 const UserSchema = z.object({
 	email: z.string().email(),
 	firebase_id: z.string().uuid(),
-	categories: z.array(z.string()),
-	api_key: z.string().uuid()
+	categories: z.array(z.string())
 });
 
 type User = z.infer<typeof UserSchema>;
 
-const userStore = writable<User | null>(null);
+function createUserStore() {
+	const { subscribe, set, update } = writable<User | null>(null);
+
+	return {
+		subscribe,
+		login: (user: User) => set(user),
+		update,
+		logout: () => set(null)
+	};
+}
+
+export const userStore = createUserStore();
