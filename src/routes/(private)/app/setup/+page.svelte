@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { getAuth } from 'firebase/auth';
 	import { goto } from '$app/navigation';
-
-	// TODO: Update the database with the categories
+	import { userStore, type AppUser } from '$lib/stores/userStore';
 
 	// Categories variables
 	let categoryInput = '';
@@ -48,6 +47,15 @@
 			});
 
 			if (res.status === 200) {
+				// Update the user store with the new categories
+				userStore.update((userObj) => {
+					if (!userObj) {
+						console.error('User not logged in, not supposed to be here.');
+						return null; // If user isn't logged in, the userStore will be null anyway, so just return null
+					}
+					userObj.categories = categories;
+					return userObj;
+				});
 				// TODO: Add a success message to tell the user that the categories were added successfully, then redirect to dashboard
 				goto('/app/dashboard');
 			}
