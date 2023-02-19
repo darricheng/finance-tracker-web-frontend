@@ -23,13 +23,6 @@
 			// If it's a new user, add details to the database then redirect to category setup page.
 			// Else do nothing as logged in user will be redirected to dashboard automatically. (See src/routes/(public)/+layout.svelte)
 			if (isNewUser) {
-				// Add user details to the user store
-				userStore.login({
-					email: user.email as string,
-					firebase_id: user.uid,
-					categories: []
-				});
-
 				const apiUrl = import.meta.env.VITE_API_URL;
 				const res = await fetch(`${apiUrl}/users/add_user`, {
 					method: 'POST',
@@ -43,6 +36,12 @@
 				});
 
 				if (res.status === 201) {
+					// Add user details to the user store
+					userStore.login({
+						email: user.email as string,
+						firebase_id: user.uid,
+						categories: []
+					});
 					goto('/app/setup');
 				} else {
 					console.error('Error adding user to database. Error code: ', res.status);
