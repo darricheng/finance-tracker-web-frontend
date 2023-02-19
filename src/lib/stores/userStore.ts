@@ -19,14 +19,14 @@ const UserSchema = z.object({
 	categories: z.array(z.string())
 });
 
-type User = z.infer<typeof UserSchema>;
+export type AppUser = z.infer<typeof UserSchema>;
 
 function createUserStore() {
-	const { subscribe, set, update } = writable<User | null>(null);
+	const { subscribe, set, update } = writable<AppUser | null>(null);
 
 	return {
 		subscribe,
-		login: (user: User) => set(user),
+		login: (user: AppUser) => set(user),
 		update,
 		logout: () => set(null)
 	};
