@@ -14,7 +14,4 @@ const authStore = writable<{
 	firebaseControlled: false
 });
 
-export default {
-	subscribe: authStore.subscribe,
-	set: authStore.set
-};
+export default authStore;
