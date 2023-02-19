@@ -5,9 +5,9 @@
 		GoogleAuthProvider,
 		getAdditionalUserInfo
 	} from 'firebase/auth';
-	import authStore from '$lib/stores/authStore';
 	import type { User, UserCredential } from 'firebase/auth';
 	import { goto } from '$app/navigation';
+	import { userStore } from '$lib/stores/userStore';
 
 	// TODO: Add Signin via redirect for mobile devices
 
@@ -17,17 +17,19 @@
 		try {
 			const res: UserCredential = await signInWithPopup(auth, provider);
 			const user: User = res.user;
-			// TODO: Determine if I need to set the authStore here. I think it's already set in the onMount function in src/routes/(public)/+layout.svelte
-			// authStore.set({ isLoggedIn: true, user, firebaseControlled: true });
 
 			const isNewUser = getAdditionalUserInfo(res)?.isNewUser;
 
-			// TODO: If it's a new user, add details to the database then redirect to category setup page. That page will prompt the user to add categories (which will be updated in the database), then redirect to dashboard after setup.
-			// TODO: Else do nothing as logged in user will be redirected to dashboard automatically. (See src/routes/(public)/+layout.svelte)
-			// Need to test thoroughly, because not sure when the redirect for a logged in user will occur.
-			// Else another option is to set the auto redirect to not occur if the user is new.
-
+			// If it's a new user, add details to the database then redirect to category setup page.
+			// Else do nothing as logged in user will be redirected to dashboard automatically. (See src/routes/(public)/+layout.svelte)
 			if (isNewUser) {
+				// Add user details to the user store
+				userStore.login({
+					email: user.email as string,
+					firebase_id: user.uid,
+					categories: []
+				});
+
 				const apiUrl = import.meta.env.VITE_API_URL;
 				const res = await fetch(`${apiUrl}/users/add_user`, {
 					method: 'POST',
@@ -42,6 +44,22 @@
 
 				if (res.status === 201) {
 					goto('/app/setup');
+				} else {
+					console.error('Error adding user to database. Error code: ', res.status);
+				}
+			}
+			// For existing users, fetch their data from the database to store in the userStore
+			else {
+				const apiUrl = import.meta.env.VITE_API_URL;
+				const res = await fetch(`${apiUrl}/users/get_user_by_email?${user.email}`, {
+					method: 'GET'
+				});
+
+				if (res.status === 200) {
+					const data = await res.json();
+					userStore.login(data);
+				} else {
+					console.error('Error fetching user data from database. Error code: ', res.status);
 				}
 			}
 		} catch (error) {
