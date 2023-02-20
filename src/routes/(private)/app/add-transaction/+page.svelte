@@ -1,3 +1,21 @@
+<script lang="ts">
+	import { userStore } from '$lib/stores/userStore';
+	// import { onMount } from 'svelte';
+
+	// Ensure that userStore is populated before rendering the page
+	function getCategories() {
+		if ($userStore) {
+			return $userStore.categories;
+		} else {
+			console.log('failed');
+			// TODO: Reconsider what should be returned here, as the userStore is not populated yet
+			// Is the user not logged in? Or was there some error when populating the userStore?
+			return [];
+		}
+	}
+	const categories = getCategories();
+</script>
+
 <section class="flex flex-col items-center justify-center w-full h-full p-12">
 	<h1 class="text-3xl font-bold">Add Transaction</h1>
 	<form class="flex flex-col w-full max-w-md mt-8">
@@ -17,13 +35,10 @@
 				<span class="label-text">Category</span>
 			</label>
 			<select class="select select-bordered" id="category">
-				<!-- TODO: Add dynamic options based on user's preferences -->
 				<option disabled selected>Pick one</option>
-				<option>Star Wars</option>
-				<option>Harry Potter</option>
-				<option>Lord of the Rings</option>
-				<option>Planet of the Apes</option>
-				<option>Star Trek</option>
+				{#each categories as category}
+					<option value={category}>{category}</option>
+				{/each}
 			</select>
 		</div>
 		<div class="form-control w-full max-w-xs">
