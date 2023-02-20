@@ -63,6 +63,7 @@
 			}
 		} catch (error) {
 			console.error(error);
+			// TODO: If add_user fails, delete the user from firebase auth, provide a user friendly error message and redirect to login page.
 		}
 	}
 </script>
