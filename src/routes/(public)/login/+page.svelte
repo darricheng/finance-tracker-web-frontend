@@ -50,7 +50,7 @@
 			// For existing users, fetch their data from the database to store in the userStore
 			else {
 				const apiUrl = import.meta.env.VITE_API_URL;
-				const res = await fetch(`${apiUrl}/users/get_user_by_email?${user.email}`, {
+				const res = await fetch(`${apiUrl}/users/get_user_by_email?email=${user.email}`, {
 					method: 'GET'
 				});
 
