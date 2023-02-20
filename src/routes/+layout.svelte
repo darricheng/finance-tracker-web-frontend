@@ -29,6 +29,9 @@
 				user,
 				firebaseControlled: true
 			});
+			// TODO: userStore probably has to be set here as well, for those users who are already logged in
+			// when they visit the app.
+			// Need to check how this interacts with the setting of userStore in the login page
 		});
 	});
 </script>
