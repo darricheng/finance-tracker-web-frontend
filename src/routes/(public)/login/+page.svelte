@@ -24,7 +24,7 @@
 			// Else do nothing as logged in user will be redirected to dashboard automatically. (See src/routes/(public)/+layout.svelte)
 			if (isNewUser) {
 				const apiUrl = import.meta.env.VITE_API_URL;
-				const res = await fetch(`${apiUrl}/users/add_user`, {
+				const res = await fetch(`${apiUrl}/users/add`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'
@@ -52,7 +52,7 @@
 			// For existing users, the userStore will be set in src/routes/+layout.svelte
 		} catch (error) {
 			console.error(error);
-			// TODO: If add_user fails, delete the user from firebase auth, provide a user friendly error message and redirect to login page.
+			// TODO: If add fails, delete the user from firebase auth, provide a user friendly error message and redirect to login page.
 		}
 	}
 </script>

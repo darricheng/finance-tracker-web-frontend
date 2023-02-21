@@ -37,7 +37,7 @@
 			// when they visit the app.
 			// Need to check how this interacts with the setting of userStore in the login page
 			const apiUrl = import.meta.env.VITE_API_URL;
-			const res = await fetch(`${apiUrl}/users/get_user_by_email?email=${user.email}`, {
+			const res = await fetch(`${apiUrl}/users/get_by_email?email=${user.email}`, {
 				method: 'GET'
 			});
 

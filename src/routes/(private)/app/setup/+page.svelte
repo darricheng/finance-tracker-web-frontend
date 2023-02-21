@@ -35,7 +35,7 @@
 
 		try {
 			const apiUrl = import.meta.env.VITE_API_URL;
-			const res = await fetch(`${apiUrl}/users/update_user_categories`, {
+			const res = await fetch(`${apiUrl}/users/update_categories`, {
 				method: 'PATCH',
 				headers: {
 					'Content-Type': 'application/json'
