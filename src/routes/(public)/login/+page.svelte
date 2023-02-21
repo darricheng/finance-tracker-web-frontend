@@ -36,8 +36,10 @@
 				});
 
 				if (res.status === 201) {
+					const data = await res.json();
 					// Add user details to the user store
 					userStore.login({
+						_id: data.$oid,
 						email: user.email as string,
 						firebase_id: user.uid,
 						categories: []
@@ -47,20 +49,7 @@
 					console.error('Error adding user to database. Error code: ', res.status);
 				}
 			}
-			// For existing users, fetch their data from the database to store in the userStore
-			else {
-				const apiUrl = import.meta.env.VITE_API_URL;
-				const res = await fetch(`${apiUrl}/users/get_user_by_email?email=${user.email}`, {
-					method: 'GET'
-				});
-
-				if (res.status === 200) {
-					const data = await res.json();
-					userStore.login(data);
-				} else {
-					console.error('Error fetching user data from database. Error code: ', res.status);
-				}
-			}
+			// For existing users, the userStore will be set in src/routes/+layout.svelte
 		} catch (error) {
 			console.error(error);
 			// TODO: If add_user fails, delete the user from firebase auth, provide a user friendly error message and redirect to login page.

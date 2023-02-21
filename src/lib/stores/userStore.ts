@@ -14,6 +14,7 @@ import { z } from 'zod';
 // The interface should be kept in sync with the User type in
 // the database.
 const UserSchema = z.object({
+	_id: z.string(),
 	email: z.string().email(),
 	firebase_id: z.string().uuid(),
 	categories: z.array(z.string())
