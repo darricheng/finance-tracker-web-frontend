@@ -15,6 +15,7 @@
 		const auth = getAuth();
 		try {
 			await auth.signOut();
+			userStore.logout();
 		} catch (error) {
 			console.log(error);
 		}
