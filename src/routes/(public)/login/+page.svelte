@@ -1,6 +1,13 @@
-<script>
-	import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-	import authStore from '$lib/stores/authStore';
+<script lang="ts">
+	import {
+		getAuth,
+		signInWithPopup,
+		GoogleAuthProvider,
+		getAdditionalUserInfo
+	} from 'firebase/auth';
+	import type { User, UserCredential } from 'firebase/auth';
+	import { goto } from '$app/navigation';
+	import { userStore } from '$lib/stores/userStore';
 
 	// TODO: Add Signin via redirect for mobile devices
 
@@ -8,19 +15,53 @@
 		const provider = new GoogleAuthProvider();
 		const auth = getAuth();
 		try {
-			const res = await signInWithPopup(auth, provider);
-			const credential = GoogleAuthProvider.credentialFromResult(res);
-			const user = res.user;
+			const res: UserCredential = await signInWithPopup(auth, provider);
+			const user: User = res.user;
+
+			const isNewUser = getAdditionalUserInfo(res)?.isNewUser;
+
+			// If it's a new user, add details to the database then redirect to category setup page.
+			// Else do nothing as logged in user will be redirected to dashboard automatically. (See src/routes/(public)/+layout.svelte)
+			if (isNewUser) {
+				const apiUrl = import.meta.env.VITE_API_URL;
+				const res = await fetch(`${apiUrl}/users/add`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						firebase_id: user.uid,
+						email: user.email
+					})
+				});
+
+				if (res.status === 201) {
+					const data = await res.json();
+					// Add user details to the user store
+					userStore.login({
+						_id: data.$oid,
+						email: user.email as string,
+						firebase_id: user.uid,
+						categories: []
+					});
+					goto('/app/setup');
+				} else {
+					console.error('Error adding user to database. Error code: ', res.status);
+				}
+			}
+			// For existing users, the userStore will be set in src/routes/+layout.svelte
 		} catch (error) {
-			console.log(error);
+			console.error(error);
+			// TODO: If add fails, delete the user from firebase auth, provide a user friendly error message and redirect to login page.
 		}
 	}
 </script>
 
-<div on:click={loginWithGoogle} class="google-btn">
+<div on:click={loginWithGoogle} on:keydown={loginWithGoogle} class="google-btn">
 	<div class="google-icon-wrapper">
 		<img
 			class="google-icon"
+			alt="Google signin button"
 			src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
 		/>
 	</div>
