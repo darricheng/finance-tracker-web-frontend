@@ -9,6 +9,7 @@
 	import { getAuth } from 'firebase/auth';
 	import { onMount } from 'svelte';
 	import authStore from '$lib/stores/authStore';
+	import { userStore } from '$lib/stores/userStore';
 
 	onMount(() => {
 		const firebaseConfig = {
@@ -23,12 +24,34 @@
 		const app = initializeApp(firebaseConfig);
 
 		const auth = getAuth(app);
-		auth.onAuthStateChanged((user) => {
+		auth.onAuthStateChanged(async (user) => {
 			authStore.set({
 				isLoggedIn: !!user,
 				user,
 				firebaseControlled: true
 			});
+
+			// user won't be null as the user should be logged in for this to be called
+			if (!user) return;
+			// TODO: userStore probably has to be set here as well, for those users who are already logged in
+			// when they visit the app.
+			// Need to check how this interacts with the setting of userStore in the login page
+			const apiUrl = import.meta.env.VITE_API_URL;
+			const res = await fetch(`${apiUrl}/users/get_by_email?email=${user.email}`, {
+				method: 'GET'
+			});
+
+			if (res.status === 200) {
+				const data = await res.json();
+				userStore.login({
+					_id: data._id.$oid,
+					email: data.email,
+					firebase_id: data.firebase_id,
+					categories: data.categories
+				});
+			} else {
+				console.error('Error fetching user data from database. Error code: ', res.status);
+			}
 		});
 	});
 </script>

@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import authStore from '$lib/stores/authStore';
 	import { getAuth } from 'firebase/auth';
+	import { userStore } from '$lib/stores/userStore';
 
 	// Send users who aren't logged in to the login page
 	authStore.subscribe(async ({ isLoggedIn, firebaseControlled }) => {
@@ -15,6 +16,7 @@
 		const auth = getAuth();
 		try {
 			await auth.signOut();
+			userStore.logout();
 		} catch (error) {
 			console.log(error);
 		}
@@ -40,7 +42,7 @@
 				tabindex="0"
 				class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52"
 			>
-				<li><a>Settings</a></li>
+				<li><a href="/app/settings">Settings</a></li>
 				<li><a on:click={logout}>Logout</a></li>
 			</ul>
 		</div>
