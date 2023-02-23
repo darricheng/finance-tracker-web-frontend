@@ -35,6 +35,8 @@
 			return;
 		}
 
+		// TODO: use zod to validate the transaction details before sending them to the server
+
 		const body = {
 			value: transaction.amount,
 			category: transaction.category,
