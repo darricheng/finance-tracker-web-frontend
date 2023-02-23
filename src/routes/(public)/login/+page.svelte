@@ -35,7 +35,7 @@
 					})
 				});
 
-				if (res.status === 201) {
+				if (res.status === 200) {
 					const data = await res.json();
 					// Add user details to the user store
 					userStore.login({
