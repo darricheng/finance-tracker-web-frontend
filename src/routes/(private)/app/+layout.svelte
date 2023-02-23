@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import authStore from '$lib/stores/authStore';
 	import { getAuth } from 'firebase/auth';
+	import { userStore } from '$lib/stores/userStore';
 
 	// Send users who aren't logged in to the login page
 	authStore.subscribe(async ({ isLoggedIn, firebaseControlled }) => {
